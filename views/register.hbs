@@ -1,1 +1,56 @@
+<div class="container my-5" style="max-width: 500px;">
+    <h2 class="mb-4">Create an Account</h2>
+
+    {{#if error}}
+        <div class="alert alert-danger">{{error}}</div>
+    {{/if}}
+
+    <form id="registerForm" method="POST" action="/register">
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" name="name" id="name" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" id="email" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" name="password" id="password" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Passport Number</label>
+            <input type="text" class="form-control" name="passportNumber" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nationality</label>
+            <input type="text" class="form-control" name="nationality" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" class="form-control" name="dateOfBirth" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+    </form>
+
+    <p class="mt-3 text-center">Already have an account? <a href="/login">Login</a></p>
+</div>
+
+<script>
+$('#registerForm').on('submit', function(e) {
+    var email = $('#email').val();
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!$('#name').val() || !email || !$('#password').val()) {
+        e.preventDefault();
+        alert('Please fill in all required fields.');
+        return;
+    }
+
+    if (!emailRegex.test(email)) {
+        e.preventDefault();
+        alert('Please enter a valid email address.');
+    }
+});
+</script>
 
