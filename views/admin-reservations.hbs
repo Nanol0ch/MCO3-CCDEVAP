@@ -1,1 +1,66 @@
+<div class="bg-primary text-white py-4" style="padding-left: 50px; padding-right: 50px;">
+    <h2> Passenger reservations </h2>
+</div>
+
+<div class="container mt-4">
+    <table class="table table-bordered bg-white text-center align-middle shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Reservation Number</th>
+                <th>Customer</th>
+                <th>Flight Route</th>
+                <th>Status</th>
+                <th>Alert</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each reservations}}
+            <tr data-id="{{this._id}}">
+                <td><strong>{{this.reservationNumber}}</strong></td>
+                <td>{{this.passengerName}}</td>
+                <td>{{this.route}}</td>
+                <td>
+                    <select class="form-select form-select-sm my-dropdown-selector-box" data-id="{{this._id}}">
+                        <option value="Confirmed" {{this.confirmedSelected}}>Confirmed</option>
+                        <option value="Cancelled" {{this.cancelledSelected}}>Cancelled</option>
+                    </select>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-primary send-out-alert-notice-btn" data-id="{{this._id}}">Push</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+
+        $(document).on('change', '.my-dropdown-selector-box', function() {
+            var reservationId = $(this).attr('data-id');
+            var newStatus = $(this).val();
+
+            $.ajax({
+                url: '/admin/reservations/' + reservationId + '/status',
+                type: 'PATCH',
+                data: { status: newStatus },
+                success: function() {
+                    console.log("Status saved to database.");
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : "Could not update the reservation status, please try again.");
+                }
+            });
+        });
+
+        $(document).on('click', '.send-out-alert-notice-btn', function() {
+            var row = $(this).closest('tr');
+            var currentSelectedOption = row.find('.my-dropdown-selector-box').val();
+
+            alert("Alert was sent!");
+        });
+
+    });
+</script>
 
