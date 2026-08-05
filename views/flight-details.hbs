@@ -1,1 +1,68 @@
+<div class="bg-primary text-white py-4" style="padding-left: 50px; padding-right: 50px;">
+    <h2> Flight Details </h2>
+    <p class="mb-0"> Review your flight before booking </p>
+</div>
+
+<div id="mainContent" class="my-4" style="padding-left: 50px; padding-right: 50px;">
+    <div class="card shadow-sm p-4">
+
+        <h5 class="mb-4"> Flight Information </h5>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p class="text-muted mb-1"> Flight Number </p>
+                <h6> {{flight.flightNumber}} </h6>
+            </div>
+            <div class="col-md-6">
+                <p class="text-muted mb-1"> Airline </p>
+                <h6> {{flight.airline}} </h6>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p class="text-muted mb-1"> Origin </p>
+                <h6> {{flight.origin}} </h6>
+            </div>
+            <div class="col-md-6">
+                <p class="text-muted mb-1"> Destination </p>
+                <h6> {{flight.destination}} </h6>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p class="text-muted mb-1"> Departure </p>
+                <h6> {{flight.departure}} </h6>
+            </div>
+            <div class="col-md-6">
+                <p class="text-muted mb-1"> Arrival </p>
+                <h6> {{flight.arrival}} </h6>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p class="text-muted mb-1"> Available Seats </p>
+                <h6> {{flight.seats}} </h6>
+            </div>
+            <div class="col-md-6">
+                <p class="text-muted mb-1"> Ticket Price </p>
+                <h6> ₱{{flight.price}} </h6>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="d-flex justify-content-between mt-3">
+            <a href="/flights/search" class="btn btn-outline-secondary">
+                Back to Search
+            </a>
+            <a href="/bookings?flightId={{flight._id}}" class="btn btn-primary">
+                Book This Flight
+            </a>
+        </div>
+
+    </div>
+</div>
 
