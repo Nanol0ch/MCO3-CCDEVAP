@@ -1,1 +1,384 @@
+<!-- Hero Banner -->
+<div class="hero-section">
+    <div class="container">
+        <p class="text-white text-info mb-2">Best Fares, Every Day</p>
+        <h1 class="display-4 fw-bold mb-3">Your next adventure<br>starts here.</h1>
+        <p class="text-white-100 mb-4">Discover hundreds of routes across Asia and beyond. Book smarter, fly better.</p>
+        <div class="d-flex gap-2 flex-wrap mb-4">
+            <a href="/search" class="btn-light btn btn-primary">Search Flights</a>
+            <button class="btn btn-outline-light">How It Works</button>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+
+    <!-- Flight Search Widget -->
+    <div class="card shadow-sm search-card mb-5">
+        <div class="card-body p-4">
+            <ul class="nav nav-pills mb-3">
+                <li class="nav-item"><button class="nav-link active" id="tab-oneway" onclick="setTripType('one-way')">One Way</button></li>
+                <li class="nav-item"><button class="nav-link" id="tab-round" onclick="setTripType('round-trip')">Round Trip</button></li>
+                <li class="nav-item"><button class="nav-link" id="tab-multi" onclick="setTripType('multi')">Multi-City</button></li>
+            </ul>
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small">From</label>
+                    <div class="position-relative">
+                        <input type="text" class="form-control" id="originInput" placeholder="Origin city or airport" value="Manila (MNL)" autocomplete="off">
+                        <div class="autocomplete-list" id="originAC"></div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small">To</label>
+                    <div class="position-relative">
+                        <input type="text" class="form-control" id="destInput" placeholder="Destination" value="Tokyo (NRT)" autocomplete="off">
+                        <div class="autocomplete-list" id="destAC"></div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold small">Depart</label>
+                    <input type="date" class="form-control" id="departDate">
+                </div>
+                <div class="col-md-2" id="returnField">
+                    <label class="form-label fw-semibold small">Return</label>
+                    <input type="date" class="form-control" id="returnDate">
+                </div>
+                <div class="col-md-auto">
+                    <button class="btn btn-warning fw-bold px-4" onclick="doSearch()">Search</button>
+                </div>
+                <div class="col-md-auto">
+                    <button class="btn btn-outline-secondary" onclick="swapAirports()" title="Swap airports">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row justify-content-center g-4 mb-5">
+        <div class="col-md-4 col-lg-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body">
+                    <h3>{{flightCount}}</h3>
+                    <p class="text-muted small mb-0">Available Flights</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body">
+                    <h3>{{bookingCount}}</h3>
+                    <p class="text-muted small mb-0">Active Bookings</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Special Deals Carousel (static promo content, unchanged) -->
+    <h4 class="mb-3">Special Deals</h4>
+    <div id="promoCarousel" class="carousel slide mb-5 shadow-sm" data-bs-ride="carousel" data-bs-interval="4000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner rounded">
+            <div class="carousel-item active">
+                <div class="promo-slide slide-blue">
+                    <span class="badge bg-warning text-dark mb-2">Flash Sale</span>
+                    <h3 class="fw-bold">Tokyo for P9,999</h3>
+                    <p class="mb-3">MNL to TYO - Round trip - Valid until June 30</p>
+                    <button class="btn btn-light btn-sm" onclick="showToast('Promo code TOKYO9999 copied!','success')">Grab Deal</button>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="promo-slide slide-purple">
+                    <span class="badge bg-warning text-dark mb-2">Limited Seats</span>
+                    <h3 class="fw-bold">Sydney from P15,000</h3>
+                    <p class="mb-3">MNL to SYD - Round trip - Business Class upgrade</p>
+                    <button class="btn btn-light btn-sm" onclick="showToast('Sydney deal saved to wishlist!','success')">Save Deal</button>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="promo-slide slide-green">
+                    <span class="badge bg-warning text-dark mb-2">Weekend Escape</span>
+                    <h3 class="fw-bold">Dubai from P18,500</h3>
+                    <p class="mb-3">MNL to DXB - One way - Selected dates in July</p>
+                    <button class="btn btn-light btn-sm" onclick="showToast('Searching DXB flights...','primary')">Find Flights</button>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#promoCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#promoCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <!-- Suggested Flights -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Suggested Flights</h4>
+        <a href="/search" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+
+    <div class="mb-3">
+        <div class="dropdown" id="destinationFilter">
+            <button class="btn btn-sm btn-dark dropdown-toggle" type="button" id="filterDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                 All Destinations
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="filterDropdownBtn">
+                <li><a class="dropdown-item active" href="#" onclick="filterFlights('all', 'All Destinations'); return false;">All Destinations</a></li>
+                <li><a class="dropdown-item" href="#" onclick="filterFlights('SIN', 'Singapore'); return false;">Singapore</a></li>
+                <li><a class="dropdown-item" href="#" onclick="filterFlights('DXB', 'Dubai'); return false;">Dubai</a></li>
+                <li><a class="dropdown-item" href="#" onclick="filterFlights('HKG', 'Hong Kong'); return false;">Hong Kong</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" onclick="filterFlights('direct', 'Direct Only'); return false;">Direct Only</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-5" id="flightsGrid">
+        <!-- Rendered by JS -->
+    </div>
+
+    <!-- Popular Destinations -->
+    <h4 class="mb-3">Popular Destinations</h4>
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm dest-card" onclick="quickFill('Manila','Tokyo')">
+                <div class="dest-thumb"><img src="/images/tokyo.jpg" alt="Tokyo"></div>
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-1">Tokyo</h5>
+                    <p class="text-muted small mb-1">MNL to TYO</p>
+                    <p class="text-primary fw-bold mb-0">from P9,999</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm dest-card" onclick="quickFill('Manila','Sydney')">
+                <div class="dest-thumb"><img src="/images/sydney.jpg" alt="Sydney"></div>
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-1">Sydney</h5>
+                    <p class="text-muted small mb-1">MNL to SYD</p>
+                    <p class="text-primary fw-bold mb-0">from P15,000</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm dest-card" onclick="quickFill('Manila','Dubai')">
+                <div class="dest-thumb"><img src="/images/dubai.jpg" alt="Dubai"></div>
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-1">Dubai</h5>
+                    <p class="text-muted small mb-1">MNL to DXB</p>
+                    <p class="text-primary fw-bold mb-0">from P18,500</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index:9000" id="toastContainer"></div>
+
+
+<script>
+const airports = [
+    { name: 'Manila',      code: 'MNL' },
+    { name: 'Tokyo',       code: 'NRT' },
+    { name: 'Singapore',   code: 'SIN' },
+    { name: 'Dubai',       code: 'DXB' },
+    { name: 'Hong Kong',   code: 'HKG' },
+    { name: 'Sydney',      code: 'SYD' },
+    { name: 'Cebu',        code: 'CEB' },
+    { name: 'Davao',       code: 'DVO' }
+];
+
+// Server-rendered data, not hardcoded anymore
+const flights = {{{json flights}}};
+
+function renderFlights(data) {
+    const grid = $('#flightsGrid');
+    grid.empty();
+
+    if (!data.length) {
+        grid.html('<div class="col-12"><p class="text-muted text-center py-3">No flights found.</p></div>');
+        return;
+    }
+
+    data.forEach(function(f) {
+        const seatsBadge = f.seats <= 5
+            ? '<span class="badge bg-danger">' + f.seats + ' seats left</span>'
+            : '<span class="badge bg-success">' + f.seats + ' seats</span>';
+
+        const stopsBadge = f.stops === 0
+            ? '<span class="badge bg-secondary">Direct</span>'
+            : '<span class="badge bg-warning text-dark">' + f.stops + ' stop</span>';
+
+        grid.append(
+            '<div class="col-md-6 col-lg-4">' +
+                '<div class="card shadow-sm h-100">' +
+                    '<div class="card-body">' +
+                        '<div class="d-flex justify-content-between align-items-start mb-2">' +
+                            '<div>' +
+                                '<div class="fw-semibold">' + f.airline + '</div>' +
+                                '<div class="text-muted small">' + f.flightNumber + '</div>' +
+                            '</div>' +
+                            '<div class="text-primary fw-bold fs-5">P' + f.price.toLocaleString() + '</div>' +
+                        '</div>' +
+                        '<div class="d-flex align-items-center justify-content-between mb-2">' +
+                            '<div class="text-center">' +
+                                '<div class="fw-bold fs-5">' + f.origin + '</div>' +
+                                '<div class="text-muted small">' + f.departure + '</div>' +
+                            '</div>' +
+                            '<div class="text-center text-muted small px-2">' +
+                                '<div>' + f.duration + '</div>' +
+                                '<div>-&gt;</div>' +
+                            '</div>' +
+                            '<div class="text-center">' +
+                                '<div class="fw-bold fs-5">' + f.destination + '</div>' +
+                                '<div class="text-muted small">' + f.arrival + '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="d-flex gap-1 mb-2">' + seatsBadge + ' ' + stopsBadge + '</div>' +
+                    '</div>' +
+                    '<div class="card-footer bg-white border-top-0">' +
+                        '<button class="btn btn-primary btn-sm w-100" onclick="bookFlight(\'' + f._id + '\')">Book Now</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>'
+        );
+    });
+}
+
+renderFlights(flights);
+
+function filterFlights(filter, label) {
+    $('#destinationFilter .dropdown-item').removeClass('active');
+    $('#destinationFilter .dropdown-item').filter(function() {
+        return $(this).text() === label;
+    }).addClass('active');
+
+    $('#filterDropdownBtn').html('<i class="bi bi-funnel me-1"></i> ' + label);
+
+    var filtered = filter === 'all'    ? flights
+                 : filter === 'direct' ? flights.filter(function(f) { return f.stops === 0; })
+                 :                       flights.filter(function(f) { return f.destination === filter; });
+
+    $('#flightsGrid').fadeOut(150, function() {
+        renderFlights(filtered);
+        $(this).fadeIn(200);
+    });
+}
+
+function bookFlight(id) {
+    var f = flights.find(function(x) { return x._id === id; });
+    showToast('Redirecting to book ' + f.origin + ' to ' + f.destination + '...', 'success');
+    setTimeout(function() { window.location.href = '/booking?flightId=' + id; }, 1200);
+}
+
+function setTripType(type) {
+    $('#tab-oneway, #tab-round, #tab-multi').removeClass('active');
+    $('#returnField').toggle(type !== 'one-way');
+    if (type === 'one-way')       $('#tab-oneway').addClass('active');
+    else if (type === 'round-trip') $('#tab-round').addClass('active');
+    else                            $('#tab-multi').addClass('active');
+}
+
+$('#returnField').hide();
+
+function bindAutocomplete(inputId, listId) {
+    $('#' + inputId).on('input', function() {
+        var q = $(this).val().toLowerCase();
+        var list = $('#' + listId).empty();
+        if (!q) { list.hide(); return; }
+
+        var matches = airports.filter(function(a) {
+            return a.name.toLowerCase().includes(q) || a.code.toLowerCase().includes(q);
+        });
+
+        if (!matches.length) { list.hide(); return; }
+
+        matches.forEach(function(a) {
+            $('<div class="ac-item">')
+                .html('<strong>' + a.name + '</strong> <span class="text-muted">(' + a.code + ')</span>')
+                .on('click', function() {
+                    $('#' + inputId).val(a.name + ' (' + a.code + ')');
+                    list.hide();
+                })
+                .appendTo(list);
+        });
+
+        list.show();
+    }).on('click', function(e) { e.stopPropagation(); });
+}
+
+bindAutocomplete('originInput', 'originAC');
+bindAutocomplete('destInput', 'destAC');
+
+$(document).on('click', function() {
+    $('.autocomplete-list').hide();
+});
+
+function swapAirports() {
+    var o = $('#originInput').val();
+    $('#originInput').val($('#destInput').val());
+    $('#destInput').val(o);
+}
+
+function quickFill(from, to) {
+    var fa = airports.find(function(a) { return a.name === from; }) || { name: from, code: from.slice(0,3).toUpperCase() };
+    var ta = airports.find(function(a) { return a.name === to; })   || { name: to,   code: to.slice(0,3).toUpperCase() };
+    $('#originInput').val(fa.name + ' (' + fa.code + ')');
+    $('#destInput').val(ta.name + ' (' + ta.code + ')');
+    showToast('Route set: ' + fa.name + ' to ' + ta.name, 'success');
+    $('html,body').animate({ scrollTop: $('.search-card').offset().top - 80 }, 400);
+}
+
+function doSearch() {
+    if (!$('#originInput').val() || !$('#destInput').val()) {
+        showToast('Please enter origin and destination.', 'warning');
+        return;
+    }
+    if (!$('#departDate').val()) {
+        showToast('Please select a departure date.', 'warning');
+        return;
+    }
+    showToast('Searching flights...', 'primary');
+    var origin = $('#originInput').val();
+    var dest = $('#destInput').val();
+    var date = $('#departDate').val();
+    var returnDate = $('#returnDate').val();
+    var tripType = $('#returnField').is(':visible') ? 'round' : 'oneway';
+    setTimeout(function() {
+        window.location.href = '/search?origin=' + origin + '&destination=' + dest + '&date=' + date + '&returnDate=' + returnDate + '&tripType=' + tripType;
+    }, 1000);
+}
+
+(function() {
+    var today = new Date();
+    var dep = new Date(today); dep.setDate(today.getDate() + 7);
+    var ret = new Date(today); ret.setDate(today.getDate() + 14);
+    var fmt = function(d) { return d.toISOString().split('T')[0]; };
+    document.getElementById('departDate').value = fmt(dep);
+    document.getElementById('departDate').min   = fmt(today);
+    document.getElementById('returnDate').value = fmt(ret);
+    document.getElementById('returnDate').min   = fmt(today);
+})();
+
+function showToast(msg, type) {
+    var id = 'toast_' + Date.now();
+    var iconMap = { success:'check-circle-fill', primary:'info-circle-fill', warning:'exclamation-triangle-fill', danger:'x-circle-fill' };
+    var icon = iconMap[type] || 'info-circle-fill';
+    var html = '<div id="' + id + '" class="toast align-items-center text-bg-' + type + ' border-0 show mb-2" role="alert">' +
+                   '<div class="d-flex">' +
+                       '<div class="toast-body"><i class="bi bi-' + icon + ' me-2"></i>' + msg + '</div>' +
+                       '<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>' +
+                   '</div>' +
+               '</div>';
+    $('#toastContainer').append(html);
+    setTimeout(function() { $('#' + id).remove(); }, 4000);
+}
+</script>
 
