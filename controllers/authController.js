@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const AuditLog = require('../models/auditLog');
 
 // GET /register
 exports.getRegisterPage = (req, res) => {
@@ -38,6 +39,12 @@ exports.registerUser = async (req, res) => {
             passportNumber,
             nationality,
             dateOfBirth
+        });
+
+        await AuditLog.create({
+            username: name,
+            role: 'Passenger',
+            activity: 'Registered a new account'
         });
 
         res.redirect('/login');
@@ -82,6 +89,12 @@ exports.loginUser = async (req, res) => {
             role: user.role
         };
 
+        await AuditLog.create({
+            username: user.name,
+            role: user.role || 'Passenger',
+            activity: 'Logged into the system'
+        });
+
         res.redirect('/profile');
 
     } catch (err) {
@@ -92,6 +105,15 @@ exports.loginUser = async (req, res) => {
 
 // GET /logout
 exports.logoutUser = (req, res) => {
+
+    if (req.session.userName) {
+    await AuditLog.create({
+        username: req.session.userName,
+        role: req.session.role || 'Passenger',
+        activity: 'Logged out of the system'
+        });
+    }    
+    
     req.session.destroy((err) => {
         if (err) console.error(err);
         res.redirect('/login');
