@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
@@ -23,7 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(session({
-    secret: 'airroute',
+    secret: process.env.SESSION_SECRET || 'airroute',
     resave: false,
     saveUninitialized: false
 }));
@@ -39,7 +41,8 @@ app.use('/bookings', require('./routes/bookingRoutes'));
 app.use('/reservations', require('./routes/reservationRoutes'));
 app.use('/admin', require('./routes/adminRoutes'));
 
-app.listen(3000, () => {
-    console.log('Server running on http://localhost:3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
 
