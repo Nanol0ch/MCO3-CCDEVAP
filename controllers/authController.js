@@ -72,8 +72,14 @@ exports.loginUser = async (req, res) => {
             return res.render('login', { error: 'Invalid email or password.' });
         }
 
-        req.session.userId = user._id;
-        req.session.userName = user.name;
+        req.session.user = {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        };
+
+res.redirect('/profile');
 
         res.redirect('/profile');
 
