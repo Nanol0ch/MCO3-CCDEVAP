@@ -201,8 +201,8 @@ exports.updateReservationStatus = async (req, res) => {
 // GET /admin/audit-logs
 exports.getAuditLogs = async (req, res) => {
     try {
-        if (!req.session.userId || req.session.role !== 'Administrator') {
-            return res.redirect('/login');
+        if (!req.session.userId || req.session.user?.role !== 'admin') {
+            return res.status(403).send('Access Denied');
         }
 
         // Fetch logs and sort by newest first

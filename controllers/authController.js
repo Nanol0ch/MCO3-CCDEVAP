@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const User = require('../models/User');
+const User = require('../models/user');
 const AuditLog = require('../models/auditLog');
 
 // GET /register
@@ -104,19 +104,23 @@ exports.loginUser = async (req, res) => {
 };
 
 // GET /logout
-exports.logoutUser = (req, res) => {
+exports.logoutUser = async (req, res) => {
+    try {
+        if (req.session.userName) {
+            await AuditLog.create({
+                username: req.session.userName,
+                role: req.session.user?.role || 'passenger',
+                activity: 'Logged out of the system'
+            });
+        }
 
-    if (req.session.userName) {
-    await AuditLog.create({
-        username: req.session.userName,
-        role: req.session.role || 'Passenger',
-        activity: 'Logged out of the system'
+        req.session.destroy((err) => {
+            if (err) console.error(err);
+            res.redirect('/login');
         });
-    }    
-    
-    req.session.destroy((err) => {
-        if (err) console.error(err);
+    } catch (err) {
+        console.error(err);
         res.redirect('/login');
-    });
+    }
 };
 

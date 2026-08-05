@@ -15,5 +15,7 @@ router.delete('/flights/:id', isAuthenticated, isAdmin, adminController.deleteFl
 router.get('/reservations', isAuthenticated, isAdmin, adminController.getAllReservations);
 router.patch('/reservations/:id/status', isAuthenticated, isAdmin, adminController.updateReservationStatus);
 
+router.get('/audit-logs', isAuthenticated, isAdmin, adminController.getAuditLogs);
+
 module.exports = router;
 
