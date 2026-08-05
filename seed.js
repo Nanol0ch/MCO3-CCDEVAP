@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const Flight = require('./models/flight');
+const User = require('./models/user');
 const db = require('./db');
 
 const flights = [
@@ -105,11 +107,42 @@ const flights = [
     }
 ];
 
+const testUsers = [
+    {
+        name: 'System Administrator',
+        email: 'admin@airroute.com',
+        password: 'Admin123!',
+        role: 'admin',
+        passportNumber: 'P0000001',
+        nationality: 'Philippines',
+        dateOfBirth: new Date('1990-01-01')
+    },
+    {
+        name: 'Test Passenger',
+        email: 'passenger@airroute.com',
+        password: 'Passenger123!',
+        role: 'passenger',
+        passportNumber: 'P0000002',
+        nationality: 'Philippines',
+        dateOfBirth: new Date('1995-06-15')
+    }
+];
+
 const seed = async () => {
     await db.connect();
     await Flight.deleteMany({});
     await Flight.insertMany(flights);
     console.log('Flights seeded successfully');
+
+    await User.deleteMany({});
+    for (const user of testUsers) {
+        const hashedPassword = await bcrypt.hash(user.password, 10);
+        await User.create({ ...user, password: hashedPassword });
+    }
+    console.log('Test users seeded successfully');
+    console.log('  Admin:     admin@airroute.com / Admin123!');
+    console.log('  Passenger: passenger@airroute.com / Passenger123!');
+
     mongoose.connection.close();
 }
 
