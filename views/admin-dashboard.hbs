@@ -1,1 +1,46 @@
+<div class="bg-primary text-white py-4" style="padding-left: 50px; padding-right: 50px;">
+    <h2> Statistics Overview </h2>
+</div>
+
+<div class="container mt-4">
+    <div class="row text-center my-4">
+        <div class="col-md-6 mb-2">
+            <div class="p-3 bg-warning text-dark rounded shadow-sm">
+                <h3>{{reservationCount}}</h3>
+                <p class="mb-0">Total Bookings Made</p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-2">
+            <div class="p-3 bg-success text-white rounded shadow-sm">
+                <h3>{{flightCount}}</h3>
+                <p class="mb-0">Flights Listed</p>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mt-4 mb-2">Shortcut Administration Controls</h4>
+    <div class="row">
+        <div class="col-md-4 mb-2">
+            <div class="card p-3">
+                <h6>Flight List Schedules</h6>
+                <p class="text-muted small">Edit Flights.</p>
+                <a href="/admin/flights" class="btn btn-sm btn-outline-primary w-100">Go to Flights Manager</a>
+            </div>
+        </div>
+        <div class="col-md-4 mb-2">
+            <div class="card p-3">
+                <h6>User Access Profiles</h6>
+                <p class="text-muted small">Edit users.</p>
+                <a href="/admin/users" class="btn btn-sm btn-outline-primary w-100">Go to Users Manager</a>
+            </div>
+        </div>
+        <div class="col-md-4 mb-2">
+            <div class="card p-3">
+                <h6>Reservations</h6>
+                <p class="text-muted small">Edit reservations.</p>
+                <a href="/admin/reservations" class="btn btn-sm btn-outline-primary w-100">Go to Bookings Manager</a>
+            </div>
+        </div>
+    </div>
+</div>
 
