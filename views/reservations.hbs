@@ -1,1 +1,166 @@
+<div class="bg-primary text-white py-4" style="padding-left: 50px; padding-right: 50px;">
+    <h2>My Booking Reservations</h2>
+</div>
+
+<div class="container mt-4">
+    <h2>Here you can check or cancel your flights</h2>
+
+    <div class="row my-3">
+        <div class="col-md-4">
+            <input type="text" id="myInputSearch" class="form-control" placeholder="Type booking code here...">
+        </div>
+        <div class="col-md-4">
+            <select id="myStatusSelect" class="form-select">
+                <option value="all">Show All Status</option>
+                <option value="Confirmed">Confirmed Only</option>
+                <option value="Cancelled">Cancelled Only</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select id="sortDropdown" class="form-select">
+                <option value="">Sort by...</option>
+                <option value="code">Booking Code</option>
+                <option value="status">Status</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="reservationContainer">
+        {{#each reservations}}
+        <div class="card p-3 mb-3 flight-item-card" id="card-{{this._id}}" data-status="{{this.status}}" data-code="{{this.reservationNumber}}" data-passenger="{{this.passengerName}}" data-price="{{this.totalPrice}}" data-id="{{this._id}}">
+            <div class="row align-items-center">
+                <div class="col-md-2">Code: <strong class="the-code">{{this.reservationNumber}}</strong></div>
+                <div class="col-md-2">Flight {{this.flightNumber}}: {{this.route}}<br><small>{{this.departure}}</small></div>
+                <div class="col-md-1">Seat: <span class="seat-badge">{{this.seat}}</span></div>
+                <div class="col-md-2">Name: <strong>{{this.passengerName}}</strong></div>
+                <div class="col-md-1"><strong>₱{{this.totalPrice}}</strong></div>
+                <div class="col-md-1"><span class="badge {{this.statusClass}} status-text">{{this.status}}</span></div>
+                <div class="col-md-3 text-end">
+                    <button class="btn btn-sm btn-info view-details-btn">Details</button>
+                    <button class="btn btn-sm btn-primary edit-seat-btn {{this.disabledClass}}" data-id="{{this._id}}" data-seat="{{this.seat}}">Change Seat</button>
+                    <button class="btn btn-sm btn-danger cancel-booking-btn {{this.disabledClass}}" data-id="{{this._id}}">Cancel Flight</button>
+                </div>
+            </div>
+        </div>
+        {{else}}
+        <p class="text-muted">You don't have any reservations yet.</p>
+        {{/each}}
+    </div>
+</div>
+
+<div class="modal fade" id="seatModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Change Seat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="savedCardId">
+                <input type="text" id="newSeatText" class="form-control mb-3">
+                <button type="button" id="saveSeatButton" class="btn btn-success w-100">Save New Seat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Booking Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detailsModalBody"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+
+        $('#sortDropdown').change(function() {
+            var sortBy = $(this).val();
+            if (!sortBy) return;
+
+            var cards = $('.flight-item-card').toArray();
+            cards.sort(function(a, b) {
+                var valA = $(a).data(sortBy);
+                var valB = $(b).data(sortBy);
+                return valA.toString().localeCompare(valB.toString());
+            });
+
+            $.each(cards, function(index, card) {
+                $('#reservationContainer').append(card);
+            });
+        });
+
+        $('.view-details-btn').click(function() {
+            var card = $(this).closest('.flight-item-card');
+            $('#detailsModalBody').html(`
+                <p><strong>Booking Code:</strong> ${card.attr('data-code')}</p>
+                <p><strong>Passenger Name:</strong> ${card.attr('data-passenger')}</p>
+                <p><strong>Status:</strong> ${card.attr('data-status')}</p>
+                <p><strong>Total Price:</strong> ₱${card.attr('data-price')}</p>
+            `);
+            new bootstrap.Modal(document.getElementById('detailsModal')).show();
+        });
+
+        $(document).on('click', '.cancel-booking-btn', function() {
+            var bookingId = $(this).attr('data-id');
+            var button = $(this);
+
+            if (confirm("Are you sure?")) {
+                $.ajax({
+                    url: '/reservations/' + bookingId,
+                    type: 'DELETE',
+                    success: function(reservation) {
+                        var card = $('#card-' + bookingId);
+                        card.find('.status-text').text('Cancelled').removeClass('bg-success').addClass('bg-danger');
+                        card.attr('data-status', 'Cancelled');
+                        button.addClass('disabled');
+                        card.find('.edit-seat-btn').addClass('disabled');
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : "Could not cancel this reservation, please try again.");
+                    }
+                });
+            }
+        });
+
+        $(document).on('click', '.edit-seat-btn', function() {
+            $('#savedCardId').val($(this).attr('data-id'));
+            $('#newSeatText').val($(this).attr('data-seat'));
+            new bootstrap.Modal(document.getElementById('seatModal')).show();
+        });
+
+        $('#saveSeatButton').click(function() {
+            var id = $('#savedCardId').val();
+            var seat = $('#newSeatText').val().toUpperCase();
+
+            $.ajax({
+                url: '/reservations/' + id + '/seat',
+                type: 'PATCH',
+                data: { seat: seat },
+                success: function(reservation) {
+                    $('#card-' + id).find('.seat-badge').text(reservation.seat);
+                    bootstrap.Modal.getInstance(document.getElementById('seatModal')).hide();
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : "Could not update seat, please try again.");
+                }
+            });
+        });
+
+        $('#myStatusSelect, #myInputSearch').on('change input', function() {
+            var status = $('#myStatusSelect').val();
+            var search = $('#myInputSearch').val().toLowerCase();
+            $('.flight-item-card').each(function() {
+                var matchesStatus = (status == 'all' || $(this).data('status') == status);
+                var matchesSearch = $(this).data('code').toLowerCase().indexOf(search) > -1;
+                $(this).toggle(matchesStatus && matchesSearch);
+            });
+        });
+    });
+</script>
 
