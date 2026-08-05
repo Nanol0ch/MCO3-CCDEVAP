@@ -1,6 +1,7 @@
 const Flight = require('../models/flight');
 const Reservation = require('../models/reservation');
 const User = require('../models/user');
+const AuditLog = require('../models/auditLog');
 
 // GET /admin
 exports.getDashboard = async (req, res) => {
@@ -197,3 +198,27 @@ exports.updateReservationStatus = async (req, res) => {
     }
 };
 
+// GET /admin/audit-logs
+exports.getAuditLogs = async (req, res) => {
+    try {
+        if (!req.session.userId || req.session.role !== 'Administrator') {
+            return res.redirect('/login');
+        }
+
+        // Fetch logs and sort by newest first
+        const logs = await AuditLog.find().sort({ timestamp: -1 }).lean();
+
+        // Format the date so it looks nice in Handlebars
+        const formattedLogs = logs.map(log => ({
+            username: log.username,
+            role: log.role,
+            activity: log.activity,
+            timestamp: log.timestamp.toLocaleString()
+        }));
+
+        res.render('audit-log', { logs: formattedLogs });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+};
