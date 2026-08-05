@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const flightController = require('../controllers/flightController');
+const { isAuthenticated } = require('../middleware/authMiddleware');
 
-router.get('/search', flightController.getSearchPage);
-router.get('/search/results', flightController.searchFlights);
+router.get('/search', isAuthenticated, flightController.getSearchPage);
+router.get('/search/results', isAuthenticated, flightController.searchFlights);
 router.get('/:id', flightController.getFlightById);
 
 module.exports = router;
