@@ -1,5 +1,6 @@
 const Reservation = require('../models/reservation');
 const Flight = require('../models/flight'); 
+const AuditLog = require('../models/auditLog');
 
 // Booking Controller Object
 const bookingController = {
@@ -70,6 +71,12 @@ const bookingController = {
             flight.seats -= 1;
             await flight.save();
 
+            await AuditLog.create({
+                username: req.session.userName || passengerName,
+                role: req.session.role || 'Passenger',
+                activity: `Created reservation ${bookingRef} for flight ${flight.flightNumber}`
+            });
+
             res.status(200).json({ message: "Booking successful!", reference: bookingRef });
 
         } catch (err) {
@@ -80,4 +87,3 @@ const bookingController = {
 };
 
 module.exports = bookingController;
-
