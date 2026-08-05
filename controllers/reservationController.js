@@ -1,5 +1,6 @@
 const Reservation = require('../models/reservation');
 const User = require('../models/user');
+const AuditLog = require('../models/auditLog');
 
 // GET /reservations
 exports.getMyReservations = async (req, res) => {
@@ -87,6 +88,12 @@ exports.cancelReservation = async (req, res) => {
         if (!reservation) {
             return res.status(404).json({ error: 'Reservation not found.' });
         }
+
+        await AuditLog.create({
+            username: req.session.userName || 'Passenger',
+            role: req.session.role || 'Passenger',
+            activity: `Cancelled reservation ${reservation.reservationNumber}`
+        });
 
         res.json(reservation);
     } catch (err) {
