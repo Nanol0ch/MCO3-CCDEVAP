@@ -1,1 +1,49 @@
+<div class="bg-primary text-white py-4" style="padding-left: 50px; padding-right: 50px;">
+    <h2> My Profile </h2>
+</div>
+
+<div class="container my-4" style="max-width: 600px;">
+    <div class="card p-4 shadow-sm">
+
+        {{#if error}}
+            <div class="alert alert-danger">{{error}}</div>
+        {{/if}}
+
+        {{#if success}}
+            <div class="alert alert-success">{{success}}</div>
+        {{/if}}
+
+        <form method="POST" action="/profile">
+
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" name="name" value="{{user.name}}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" value="{{user.email}}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Passport Number</label>
+                <input type="text" class="form-control" name="passportNumber" value="{{user.passportNumber}}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Nationality</label>
+                <input type="text" class="form-control" name="nationality" value="{{user.nationality}}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" name="dateOfBirth" value="{{user.dateOfBirth}}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+
+        </form>
+
+    </div>
+</div>
 
