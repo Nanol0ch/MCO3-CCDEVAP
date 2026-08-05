@@ -1,1 +1,50 @@
 
+<div class="bg-primary text-white py-4" style="padding-left: 50px; padding-right: 50px;">
+    <h2> User Registration </h2>
+</div>
+
+<div class="container mt-4">
+    <div class="row my-3">
+        <div class="col-md-6">
+            <input type="text" id="filterUserNameBox" class="form-control" placeholder="Search customer by name">
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped bg-white text-center shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Customer Name</th>
+                <th>Email</th>
+                <th>Passport Number</th>
+                <th>Nationality</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each users}}
+            <tr class="passenger-account-row" data-fullname="{{this.name}}">
+                <td>{{this.name}}</td>
+                <td>{{this.email}}</td>
+                <td>{{this.passportNumber}}</td>
+                <td>{{this.nationality}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#filterUserNameBox').on('input', function() {
+            var textValueInput = $(this).val().toLowerCase();
+
+            $('.passenger-account-row').each(function() {
+                var stringMatchName = $(this).attr('data-fullname').toLowerCase();
+                if (stringMatchName.indexOf(textValueInput) > -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+</script>
