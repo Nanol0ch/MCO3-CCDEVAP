@@ -1,17 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
+const { isAuthenticated } = require('../middleware/authMiddleware');
+const { isAdmin } = require('../middleware/roleMiddleware');
 
-router.get('/', adminController.getDashboard);
-router.get('/users', adminController.getUsersPage);
+router.get('/', isAuthenticated, isAdmin, adminController.getDashboard);
+router.get('/users', isAuthenticated, isAdmin, adminController.getUsersPage);
 
-router.get('/flights', adminController.getFlights);
-router.post('/flights', adminController.createFlight);
-router.put('/flights/:id', adminController.updateFlight);
-router.delete('/flights/:id', adminController.deleteFlight);
+router.get('/flights', isAuthenticated, isAdmin, adminController.getFlights);
+router.post('/flights', isAuthenticated, isAdmin, adminController.createFlight);
+router.put('/flights/:id', isAuthenticated, isAdmin, adminController.updateFlight);
+router.delete('/flights/:id', isAuthenticated, isAdmin, adminController.deleteFlight);
 
-router.get('/reservations', adminController.getAllReservations);
-router.patch('/reservations/:id/status', adminController.updateReservationStatus);
+router.get('/reservations', isAuthenticated, isAdmin, adminController.getAllReservations);
+router.patch('/reservations/:id/status', isAuthenticated, isAdmin, adminController.updateReservationStatus);
 
 module.exports = router;
 
