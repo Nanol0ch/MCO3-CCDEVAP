@@ -5,7 +5,7 @@ const AuditLog = require('../models/auditLog');
 // GET /reservations
 exports.getMyReservations = async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.user) {
             return res.redirect('/login');
         }
 
@@ -36,7 +36,7 @@ exports.getMyReservations = async (req, res) => {
 // PATCH /reservations/:id/seat
 exports.updateSeat = async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.user) {
             return res.status(401).json({ error: 'Please log in first.' });
         }
 
@@ -75,7 +75,7 @@ exports.updateSeat = async (req, res) => {
 // DELETE /reservations/:id
 exports.cancelReservation = async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.user) {
             return res.status(401).json({ error: 'Please log in first.' });
         }
 
