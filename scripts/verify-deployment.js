@@ -5,7 +5,7 @@ function request(method, path, body, cookie) {
         const data = body ? new URLSearchParams(body).toString() : null;
         const req = http.request({
             hostname: 'localhost',
-            port: 3000,
+            port: parseInt(process.env.PORT) || 3000,
             path,
             method,
             headers: {
