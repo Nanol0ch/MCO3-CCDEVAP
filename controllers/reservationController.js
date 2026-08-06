@@ -9,7 +9,7 @@ exports.getMyReservations = async (req, res) => {
             return res.redirect('/login');
         }
 
-        const user = await User.findById(req.session.userId).lean();
+        const user = await User.findById(req.session.user._id).lean();
         const reservations = await Reservation.find({ email: user.email }).populate('flightId').lean();
 
         const formatted = reservations.map(r => ({
