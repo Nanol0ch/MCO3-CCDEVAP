@@ -91,7 +91,7 @@ exports.cancelReservation = async (req, res) => {
 
         await AuditLog.create({
             username: req.session.userName || 'Passenger',
-            role: req.session.role || 'Passenger',
+            role: req.session.user?.role || 'Passenger',
             activity: `Cancelled reservation ${reservation.reservationNumber}`
         });
 
