@@ -284,7 +284,7 @@ $(document).ready(function() {
             <p><strong>Seats Available:</strong> ${flight.seats}</p>
             <p><strong>Price:</strong> ₱${flight.price.toLocaleString()}</p>
         `);
-        $('#flightDetailsModal .btn-primary').attr('href', '/flight-details?flightId=' + flight._id);
+        $('#flightDetailsModal .btn-primary').attr('href', '/flights/' + flight._id);
         new bootstrap.Modal(document.getElementById('flightDetailsModal')).show();
     });
 
