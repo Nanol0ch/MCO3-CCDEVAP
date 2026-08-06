@@ -55,12 +55,13 @@ exports.updateProfile = async (req, res) => {
         }
 
         const updatedUser = await User.findByIdAndUpdate(
-            req.session.userId,
+            req.session.user._id,
             { name, email, passportNumber, nationality, dateOfBirth },
             { new: true }
         );
 
         req.session.userName = updatedUser.name;
+        req.session.user.name = updatedUser.name;
 
         res.render('profile', { user: updatedUser, success: 'Profile updated successfully.' });
 
