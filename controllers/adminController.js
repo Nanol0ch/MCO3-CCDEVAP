@@ -26,9 +26,9 @@ exports.getDashboard = async (req, res) => {
 // GET /admin/users
 exports.getUsersPage = async (req, res) => {
     try {
-        if (!req.session.userId) {
-            return res.redirect('/login');
-        }
+       if (!req.session.user) {
+       return res.redirect('/login');
+       }
 
         const users = await User.find().lean();
 
@@ -42,7 +42,7 @@ exports.getUsersPage = async (req, res) => {
 // GET /admin/flights
 exports.getFlights = async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.user) {
             return res.redirect('/login');
         }
 
@@ -106,7 +106,7 @@ exports.createFlight = async (req, res) => {
 // PUT /admin/flights/:id
 exports.updateFlight = async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.user) {
             return res.status(401).json({ error: 'Please log in first.' });
         }
 
@@ -140,7 +140,7 @@ exports.updateFlight = async (req, res) => {
 // DELETE /admin/flights/:id
 exports.deleteFlight = async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.user) {
             return res.status(401).json({ error: 'Please log in first.' });
         }
 
@@ -166,7 +166,7 @@ exports.deleteFlight = async (req, res) => {
 // GET /admin/reservations
 exports.getAllReservations = async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.user) {
             return res.redirect('/login');
         }
 
@@ -191,7 +191,7 @@ exports.getAllReservations = async (req, res) => {
 // PATCH /admin/reservations/:id/status
 exports.updateReservationStatus = async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.session.user) {
             return res.status(401).json({ error: 'Please log in first.' });
         }
 
