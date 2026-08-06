@@ -352,7 +352,7 @@ function doSearch() {
     var returnDate = $('#returnDate').val();
     var tripType = $('#returnField').is(':visible') ? 'round' : 'oneway';
     setTimeout(function() {
-        window.location.href = '/search?origin=' + origin + '&destination=' + dest + '&date=' + date + '&returnDate=' + returnDate + '&tripType=' + tripType;
+       window.location.href = '/flights/search?origin=' + origin + '&destination=' + dest + '&date=' + date + '&returnDate=' + returnDate + '&tripType=' + tripType;
     }, 1000);
 }
 
