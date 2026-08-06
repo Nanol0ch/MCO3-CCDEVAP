@@ -4,7 +4,7 @@ AirRoute is a full-stack flight booking web application built with Node.js, Expr
 
 DEPLOYMENT
 
-Live URL: http://[YOUR_CCSCLOUD_URL_HERE]
+Live URL: http://10.2.14.10:60110
 Administrator account: admin@airroute.com / Admin123!
 Passenger account: passenger@airroute.com / Passenger123!
 
