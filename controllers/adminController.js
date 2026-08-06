@@ -152,7 +152,7 @@ exports.getAllReservations = async (req, res) => {
             return res.redirect('/login');
         }
 
-        const reservations = await Reservation.find().populate('flightId');
+        const reservations = await Reservation.find().populate('flightId').lean();
 
         const formatted = reservations.map(r => ({
             _id: r._id,
