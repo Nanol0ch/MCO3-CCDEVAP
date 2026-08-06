@@ -10,7 +10,7 @@ exports.getMyReservations = async (req, res) => {
         }
 
         const user = await User.findById(req.session.userId);
-        const reservations = await Reservation.find({ email: user.email }).populate('flightId');
+        const reservations = await Reservation.find({ email: user.email }).populate('flightId').lean();
 
         const formatted = reservations.map(r => ({
             _id: r._id,
