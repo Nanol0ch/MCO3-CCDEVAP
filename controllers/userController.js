@@ -110,7 +110,7 @@ exports.getHomePage = async (req, res) => {
 // GET /profile
 exports.getProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.session.userId);
+        const user = await User.findById(req.session.userId).lean();
         if (!user) return res.redirect('/login');
 
         res.render('profile', { user });
@@ -126,13 +126,13 @@ exports.updateProfile = async (req, res) => {
         const { name, email, passportNumber, nationality, dateOfBirth } = req.body;
 
         if (!name || !email || !passportNumber || !nationality || !dateOfBirth) {
-            const user = await User.findById(req.session.userId);
+            const user = await User.findById(req.session.userId).lean();
             return res.render('profile', { user, error: 'All fields are required.' });
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            const user = await User.findById(req.session.userId);
+            const user = await User.findById(req.session.userId).lean();
             return res.render('profile', { user, error: 'Please enter a valid email address.' });
         }
 
