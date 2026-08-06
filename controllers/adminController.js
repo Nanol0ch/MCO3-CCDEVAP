@@ -6,10 +6,10 @@ const AuditLog = require('../models/auditLog');
 // GET /admin
 exports.getDashboard = async (req, res) => {
     try {
-        if (!req.session.userId) {
-            return res.redirect('/login');
+        if (!req.session.user) {
+        return res.redirect('/login');
         }
-
+        
         const flightCount = await Flight.countDocuments();
         const reservationCount = await Reservation.countDocuments();
 
