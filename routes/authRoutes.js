@@ -12,7 +12,7 @@ router.post('/login', authController.loginUser);
 
 router.get('/logout', authController.logoutUser);
 
-router.get('/', userController.getHomePage);
+router.get('/', isAuthenticated, userController.getHomePage);
 router.get('/profile', isAuthenticated, userController.getProfile);
 router.post('/profile', isAuthenticated, userController.updateProfile);
 
