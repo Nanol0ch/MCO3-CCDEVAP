@@ -91,11 +91,11 @@ exports.createFlight = async (req, res) => {
         });
 
         await AuditLog.create({
-        username: req.session.userName || 'Admin',
-        role: req.session.user?.role || 'admin',
-        activity: `Created flight ${newFlight.flightNumber}`
-       });
-        
+            username: req.session.userName || 'Admin',
+            role: req.session.user?.role || 'admin',
+            activity: `Created flight ${newFlight.flightNumber}`
+        });
+
         res.json(newFlight);
     } catch (err) {
         console.error(err);
@@ -124,6 +124,12 @@ exports.updateFlight = async (req, res) => {
             return res.status(404).json({ error: 'Flight not found.' });
         }
 
+        await AuditLog.create({
+            username: req.session.userName || 'Admin',
+            role: req.session.user?.role || 'admin',
+            activity: `Updated flight ${updatedFlight.flightNumber}`
+        });
+
         res.json(updatedFlight);
     } catch (err) {
         console.error(err);
@@ -143,6 +149,12 @@ exports.deleteFlight = async (req, res) => {
         if (!deletedFlight) {
             return res.status(404).json({ error: 'Flight not found.' });
         }
+
+        await AuditLog.create({
+            username: req.session.userName || 'Admin',
+            role: req.session.user?.role || 'admin',
+            activity: `Deleted flight ${deletedFlight.flightNumber}`
+        });
 
         res.json({ deleted: true });
     } catch (err) {
@@ -211,10 +223,8 @@ exports.getAuditLogs = async (req, res) => {
             return res.status(403).send('Access Denied');
         }
 
-        // Fetch logs and sort by newest first
         const logs = await AuditLog.find().sort({ timestamp: -1 }).lean();
 
-        // Format the date so it looks nice in Handlebars
         const formattedLogs = logs.map(log => ({
             username: log.username,
             role: log.role,
