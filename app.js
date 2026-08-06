@@ -15,6 +15,9 @@ app.engine('hbs', exphbs.engine({
     helpers: {
         json: function(context) {
             return JSON.stringify(context);
+        },
+        eq: function(a, b) {
+            return a === b;
         }
     }
 }));
@@ -45,4 +48,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
-
