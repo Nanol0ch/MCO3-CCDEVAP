@@ -18,9 +18,11 @@ exports.getHomePage = async (req, res) => {
 // GET /profile
 exports.getProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.session.userId).lean();
+        const user = await User.findById(req.session.user._id).lean();
         if (!user) return res.redirect('/login');
+        user.dateOfBirth = user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : '';
         res.render('profile', { user });
+        
     } catch (err) {
         console.error(err);
         res.redirect('/login');
@@ -33,13 +35,13 @@ exports.updateProfile = async (req, res) => {
         const { name, email, passportNumber, nationality, dateOfBirth } = req.body;
 
         if (!name || !email || !passportNumber || !nationality || !dateOfBirth) {
-            const user = await User.findById(req.session.userId).lean();
+            const user = await User.findById(req.session.user._id).lean();
             return res.render('profile', { user, error: 'All fields are required.' });
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            const user = await User.findById(req.session.userId).lean();
+            const user = await User.findById(req.session.user._id).lean();
             return res.render('profile', { user, error: 'Please enter a valid email address.' });
         }
 
@@ -48,7 +50,7 @@ exports.updateProfile = async (req, res) => {
             _id: { $ne: req.session.userId }
         });
         if (existingUser) {
-            const user = await User.findById(req.session.userId).lean();
+            const user = await User.findById(req.session.user._id).lean();
             return res.render('profile', { user, error: 'That email is already in use by another account.' });
         }
 
