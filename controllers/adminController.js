@@ -30,7 +30,7 @@ exports.getUsersPage = async (req, res) => {
             return res.redirect('/login');
         }
 
-        const users = await User.find();
+        const users = await User.find().lean();
 
         res.render('admin-users', { users: users });
     } catch (err) {
