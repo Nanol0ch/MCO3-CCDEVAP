@@ -142,7 +142,7 @@ exports.updateProfile = async (req, res) => {
             _id: { $ne: req.session.userId }
         });
         if (existingUser) {
-            const user = await User.findById(req.session.userId);
+            const user = await User.findById(req.session.userId).lean();
             return res.render('profile', { user, error: 'That email is already in use by another account.' });
         }
 
