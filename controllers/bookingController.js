@@ -33,7 +33,8 @@ const bookingController = {
     // POST Route: Submit Booking
     submitBooking: async (req, res) => {
         try {
-            const { flightId, passengerName, email, passportNumber, seat, totalPrice } = req.body;
+            const { flightId, passengerName, passportNumber, seat, totalPrice } = req.body;
+            const email = req.session.user?.email || req.body.email;
 
             // Server-Side Validation
             if (!passengerName || !email || !passportNumber || !seat) {
