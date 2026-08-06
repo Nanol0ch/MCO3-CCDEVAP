@@ -90,6 +90,12 @@ exports.createFlight = async (req, res) => {
             price
         });
 
+        await AuditLog.create({
+        username: req.session.userName || 'Admin',
+        role: req.session.user?.role || 'admin',
+        activity: `Created flight ${newFlight.flightNumber}`
+       });
+        
         res.json(newFlight);
     } catch (err) {
         console.error(err);
