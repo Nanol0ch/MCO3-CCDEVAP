@@ -49,6 +49,11 @@ exports.updateSeat = async (req, res) => {
             return res.status(404).json({ error: 'Reservation not found.' });
         }
 
+        // Ownership check
+        if (reservation.email !== req.session.user.email) {
+            return res.status(403).json({ error: 'Access denied.' });
+        }
+
         const newSeat = req.body.seat.toUpperCase();
 
         const seatTaken = await Reservation.findOne({
@@ -79,15 +84,18 @@ exports.cancelReservation = async (req, res) => {
             return res.status(401).json({ error: 'Please log in first.' });
         }
 
-        const reservation = await Reservation.findByIdAndUpdate(
-            req.params.id,
-            { status: 'Cancelled' },
-            { new: true }
-        );
+        const reservation = await Reservation.findById(req.params.id);
 
         if (!reservation) {
             return res.status(404).json({ error: 'Reservation not found.' });
         }
+
+        if (reservation.email !== req.session.user.email) {
+            return res.status(403).json({ error: 'Access denied.' });
+        }
+
+        reservation.status = 'Cancelled';
+        await reservation.save();
 
         await AuditLog.create({
             username: req.session.userName || 'Passenger',
