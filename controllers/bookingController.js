@@ -73,7 +73,7 @@ const bookingController = {
 
             await AuditLog.create({
                 username: req.session.userName || passengerName,
-                role: req.session.role || 'Passenger',
+                role: req.session.user?.role || 'Passenger',
                 activity: `Created reservation ${bookingRef} for flight ${flight.flightNumber}`
             });
 
