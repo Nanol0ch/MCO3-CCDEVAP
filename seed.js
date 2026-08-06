@@ -10,8 +10,8 @@ const flights = [
         airline: 'Philippine Airlines',
         origin: 'MNL',
         destination: 'SIN',
-        departure: new Date('2026-08-01T06:00:00'),
-        arrival: new Date('2026-08-01T09:45:00'),
+        departure: new Date('2026-08-10T06:00:00'),
+        arrival: new Date('2026-08-10T09:45:00'),
         seats: 12,
         price: 4500
     },
@@ -20,8 +20,8 @@ const flights = [
         airline: 'Cebu Pacific',
         origin: 'MNL',
         destination: 'HKG',
-        departure: new Date('2026-08-01T08:30:00'),
-        arrival: new Date('2026-08-01T11:10:00'),
+        departure: new Date('2026-08-10T08:30:00'),
+        arrival: new Date('2026-08-10T11:10:00'),
         seats: 5,
         price: 3200
     },
@@ -30,8 +30,8 @@ const flights = [
         airline: 'AirAsia',
         origin: 'CEB',
         destination: 'SIN',
-        departure: new Date('2026-08-01T13:15:00'),
-        arrival: new Date('2026-08-01T17:00:00'),
+        departure: new Date('2026-08-10T13:15:00'),
+        arrival: new Date('2026-08-10T17:00:00'),
         seats: 20,
         price: 6800
     },
@@ -40,8 +40,8 @@ const flights = [
         airline: 'Qatar Airways',
         origin: 'MNL',
         destination: 'DXB',
-        departure: new Date('2026-08-01T22:00:00'),
-        arrival: new Date('2026-08-02T04:30:00'),
+        departure: new Date('2026-08-10T22:00:00'),
+        arrival: new Date('2026-08-11T04:30:00'),
         seats: 8,
         price: 18500
     },
@@ -50,8 +50,8 @@ const flights = [
         airline: 'Emirates',
         origin: 'MNL',
         destination: 'DXB',
-        departure: new Date('2026-08-02T01:00:00'),
-        arrival: new Date('2026-08-02T06:15:00'),
+        departure: new Date('2026-08-15T01:00:00'),
+        arrival: new Date('2026-08-15T06:15:00'),
         seats: 3,
         price: 22000
     },
@@ -60,8 +60,8 @@ const flights = [
         airline: 'Philippine Airlines',
         origin: 'MNL',
         destination: 'NRT',
-        departure: new Date('2026-08-02T10:00:00'),
-        arrival: new Date('2026-08-02T15:30:00'),
+        departure: new Date('2026-08-15T10:00:00'),
+        arrival: new Date('2026-08-15T15:30:00'),
         seats: 15,
         price: 12000
     },
@@ -70,8 +70,8 @@ const flights = [
         airline: 'Cebu Pacific',
         origin: 'DVO',
         destination: 'MNL',
-        departure: new Date('2026-08-02T07:45:00'),
-        arrival: new Date('2026-08-02T09:15:00'),
+        departure: new Date('2026-08-20T07:45:00'),
+        arrival: new Date('2026-08-20T09:15:00'),
         seats: 30,
         price: 2100
     },
@@ -80,8 +80,8 @@ const flights = [
         airline: 'AirAsia',
         origin: 'MNL',
         destination: 'SYD',
-        departure: new Date('2026-08-02T15:00:00'),
-        arrival: new Date('2026-08-03T06:30:00'),
+        departure: new Date('2026-08-20T15:00:00'),
+        arrival: new Date('2026-08-21T06:30:00'),
         seats: 10,
         price: 15000
     },
@@ -90,8 +90,8 @@ const flights = [
         airline: 'Emirates',
         origin: 'MNL',
         destination: 'DXB',
-        departure: new Date('2026-08-02T19:30:00'),
-        arrival: new Date('2026-08-03T01:00:00'),
+        departure: new Date('2026-08-20T19:30:00'),
+        arrival: new Date('2026-08-21T01:00:00'),
         seats: 2,
         price: 35000
     },
@@ -100,8 +100,8 @@ const flights = [
         airline: 'Qatar Airways',
         origin: 'CEB',
         destination: 'HKG',
-        departure: new Date('2026-08-02T11:00:00'),
-        arrival: new Date('2026-08-02T13:30:00'),
+        departure: new Date('2026-08-20T11:00:00'),
+        arrival: new Date('2026-08-20T13:30:00'),
         seats: 18,
         price: 7500
     }
@@ -147,4 +147,3 @@ const seed = async () => {
 }
 
 seed();
-
