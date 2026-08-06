@@ -46,7 +46,7 @@ exports.getFlights = async (req, res) => {
             return res.redirect('/login');
         }
 
-        const flights = await Flight.find();
+        const flights = await Flight.find().lean();
 
         const formatted = flights.map(f => ({
             _id: f._id,
