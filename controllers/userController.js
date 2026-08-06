@@ -47,7 +47,7 @@ exports.updateProfile = async (req, res) => {
 
         const existingUser = await User.findOne({
             email: email.toLowerCase(),
-            _id: { $ne: req.session.userId }
+            _id: { $ne: req.session.user._id }
         });
         if (existingUser) {
             const user = await User.findById(req.session.user._id).lean();
