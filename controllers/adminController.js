@@ -69,8 +69,8 @@ exports.getFlights = async (req, res) => {
 // POST /admin/flights
 exports.createFlight = async (req, res) => {
     try {
-        if (!req.session.userId) {
-            return res.status(401).json({ error: 'Please log in first.' });
+        if (!req.session.user) {
+        return res.status(401).json({ error: 'Please log in first.' });
         }
 
         const { flightNumber, airline, origin, destination, departure, arrival, seats, price } = req.body;
