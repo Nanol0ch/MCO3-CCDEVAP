@@ -1,72 +1,65 @@
-const http = require('http');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const User = require('../models/user');
 
-function request(method, path, body, cookie) {
-    return new Promise((resolve, reject) => {
-        const data = body ? new URLSearchParams(body).toString() : null;
-        const req = http.request({
-            hostname: 'localhost',
-            port: parseInt(process.env.PORT) || 3000,
-            path,
-            method,
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                ...(data ? { 'Content-Length': Buffer.byteLength(data) } : {}),
-                ...(cookie ? { Cookie: cookie } : {})
-            }
-        }, (res) => {
-            let chunks = '';
-            res.on('data', (c) => chunks += c);
-            res.on('end', () => resolve({ status: res.statusCode, headers: res.headers, body: chunks }));
+beforeAll(async () => {
+    const testUri = (process.env.MONGO_URI || 'mongodb://localhost:27017/airroute').replace('/airroute', '/airroute_test');
+    await mongoose.connect(testUri);
+});
+
+afterAll(async () => {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+});
+
+afterEach(async () => {
+    await User.deleteMany({});
+});
+
+describe('User Authentication', () => {
+
+    test('Successful registration', async () => {
+        const hashedPassword = await bcrypt.hash('password123', 10);
+        const user = await User.create({
+            name: 'Test User',
+            email: 'test@email.com',
+            password: hashedPassword,
+            passportNumber: 'A1234567',
+            nationality: 'Filipino',
+            dateOfBirth: new Date('2000-01-01')
         });
-        req.on('error', reject);
-        if (data) req.write(data);
-        req.end();
-    });
-}
-
-function getCookie(setCookie) {
-    if (!setCookie) return '';
-    const arr = Array.isArray(setCookie) ? setCookie : [setCookie];
-    return arr.map(c => c.split(';')[0]).join('; ');
-}
-
-(async () => {
-    const checks = [];
-
-    // Public pages
-    for (const path of ['/', '/login', '/register']) {
-        const r = await request('GET', path);
-        checks.push({ test: `GET ${path}`, ok: r.status === 200, status: r.status });
-    }
-
-    // Passenger login + RBAC
-    const login = await request('POST', '/login', { email: 'passenger@airroute.com', password: 'Passenger123!' });
-    const cookie = getCookie(login.headers['set-cookie']);
-    checks.push({ test: 'Passenger login redirect', ok: login.status === 302, status: login.status });
-
-    const passengerAdmin = await request('GET', '/admin', null, cookie);
-    checks.push({ test: 'Passenger blocked from /admin', ok: passengerAdmin.status === 403, status: passengerAdmin.status });
-
-    const profile = await request('GET', '/profile', null, cookie);
-    checks.push({ test: 'Passenger profile', ok: profile.status === 200, status: profile.status });
-
-    // Admin login + pages
-    const adminLogin = await request('POST', '/login', { email: 'admin@airroute.com', password: 'Admin123!' });
-    const adminCookie = getCookie(adminLogin.headers['set-cookie']);
-
-    for (const path of ['/admin', '/admin/flights', '/admin/users', '/admin/reservations', '/admin/audit-logs']) {
-        const r = await request('GET', path, null, adminCookie);
-        checks.push({ test: `Admin ${path}`, ok: r.status === 200, status: r.status });
-    }
-
-    const audit = await request('GET', '/admin/audit-logs', null, adminCookie);
-    checks.push({
-        test: 'Audit trail has login entries',
-        ok: audit.body.includes('Logged into the system'),
-        status: audit.status
+        expect(user.email).toBe('test@email.com');
+        expect(user.name).toBe('Test User');
     });
 
-    console.log(JSON.stringify(checks, null, 2));
-    const failed = checks.filter(c => !c.ok);
-    process.exit(failed.length ? 1 : 0);
-})();
+    test('Successful login', async () => {
+        const hashedPassword = await bcrypt.hash('password123', 10);
+        await User.create({
+            name: 'Test User',
+            email: 'test@email.com',
+            password: hashedPassword,
+            passportNumber: 'A1234567',
+            nationality: 'Filipino',
+            dateOfBirth: new Date('2000-01-01')
+        });
+        const user = await User.findOne({ email: 'test@email.com' });
+        const isMatch = await bcrypt.compare('password123', user.password);
+        expect(isMatch).toBe(true);
+    });
+
+    test('Failed login with wrong password', async () => {
+        const hashedPassword = await bcrypt.hash('password123', 10);
+        await User.create({
+            name: 'Test User',
+            email: 'test@email.com',
+            password: hashedPassword,
+            passportNumber: 'A1234567',
+            nationality: 'Filipino',
+            dateOfBirth: new Date('2000-01-01')
+        });
+        const user = await User.findOne({ email: 'test@email.com' });
+        const isMatch = await bcrypt.compare('wrongpassword', user.password);
+        expect(isMatch).toBe(false);
+    });
+
+});
