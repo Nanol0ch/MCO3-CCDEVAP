@@ -7,7 +7,7 @@ const AuditLog = require('../models/auditLog');
 exports.getDashboard = async (req, res) => {
     try {
         if (!req.session.user) {
-        return res.redirect('/login');
+            return res.redirect('/login');
         }
         
         const flightCount = await Flight.countDocuments();
@@ -26,9 +26,9 @@ exports.getDashboard = async (req, res) => {
 // GET /admin/users
 exports.getUsersPage = async (req, res) => {
     try {
-       if (!req.session.user) {
-       return res.redirect('/login');
-       }
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
 
         const users = await User.find().lean();
 
@@ -70,7 +70,7 @@ exports.getFlights = async (req, res) => {
 exports.createFlight = async (req, res) => {
     try {
         if (!req.session.user) {
-        return res.status(401).json({ error: 'Please log in first.' });
+            return res.status(401).json({ error: 'Please log in first.' });
         }
 
         const { flightNumber, airline, origin, destination, departure, arrival, seats, price } = req.body;
@@ -110,13 +110,24 @@ exports.updateFlight = async (req, res) => {
             return res.status(401).json({ error: 'Please log in first.' });
         }
 
-        if (!req.body.price) {
+        const { flightNumber, airline, origin, destination, departure, arrival, seats, price } = req.body;
+
+        if (!price) {
             return res.status(400).json({ error: 'Price is required.' });
         }
 
+        const updateData = { price };
+        if (flightNumber) updateData.flightNumber = flightNumber;
+        if (airline) updateData.airline = airline;
+        if (origin) updateData.origin = origin;
+        if (destination) updateData.destination = destination;
+        if (departure) updateData.departure = departure;
+        if (arrival) updateData.arrival = arrival;
+        if (seats) updateData.seats = seats;
+
         const updatedFlight = await Flight.findByIdAndUpdate(
             req.params.id,
-            { price: req.body.price },
+            updateData,
             { new: true }
         );
 
@@ -208,6 +219,12 @@ exports.updateReservationStatus = async (req, res) => {
         if (!updatedReservation) {
             return res.status(404).json({ error: 'Reservation not found.' });
         }
+
+        await AuditLog.create({
+            username: req.session.userName || 'Admin',
+            role: req.session.user?.role || 'admin',
+            activity: `Updated reservation ${updatedReservation._id} status to ${req.body.status}`
+        });
 
         res.json(updatedReservation);
     } catch (err) {
