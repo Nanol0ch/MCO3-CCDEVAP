@@ -19,11 +19,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/"> Home </a>
                 </li>
+                {{#if session.user}}
                 <li class="nav-item">
                     <a class="nav-link" href="/flights/search"> Search Flights </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/flights/search"> Book Flight </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/reservations"> My Reservations </a>
@@ -31,37 +29,40 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/profile"> User Profile </a>
                 </li>
-                {{#if session.user}}
-                    {{#if (eq session.user.role "admin")}}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"> Admin Panel </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/admin"> Dashboard </a></li>
-                                <li><a class="dropdown-item" href="/admin/flights"> Flight Management </a></li>
-                                <li><a class="dropdown-item" href="/admin/users"> User Management </a></li>
-                                <li><a class="dropdown-item" href="/admin/reservations"> Reservations </a></li>
-                                <li><a class="dropdown-item" href="/admin/audit-logs"> Audit Trail </a></li>
-                            </ul>
-                        </li>
-                    {{/if}}
+                {{#if (eq session.user.role "admin")}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"> Admin Panel </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/admin"> Dashboard </a></li>
+                            <li><a class="dropdown-item" href="/admin/flights"> Flight Management </a></li>
+                            <li><a class="dropdown-item" href="/admin/users"> User Management </a></li>
+                            <li><a class="dropdown-item" href="/admin/reservations"> Reservations </a></li>
+                            <li><a class="dropdown-item" href="/admin/audit-logs"> Audit Trail </a></li>
+                        </ul>
+                    </li>
+                {{/if}}
                 {{/if}}
             </ul>
             <ul class="navbar-nav ms-auto me-2">
+                {{#if session.user}}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        {{#if session.userName}}
-                            {{session.userName}}
-                        {{else}}
-                            Guest
-                        {{/if}}
+                        {{session.userName}}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li> <a class="dropdown-item" href="/profile"> Profile </a> </li>
-                        <li> <a class="dropdown-item" href="#"> Settings </a> </li>
-                        <li> <hr class="dropdown-divider"> </li>
-                        <li> <a class="dropdown-item" href="/logout"> Logout </a> </li>
+                        <li><a class="dropdown-item" href="/profile"> Profile </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/logout"> Logout </a></li>
                     </ul>
                 </li>
+                {{else}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/login"> Login </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register"> Register </a>
+                </li>
+                {{/if}}
             </ul>
         </div>
     </div>
