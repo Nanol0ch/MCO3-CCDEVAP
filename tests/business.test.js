@@ -3,7 +3,8 @@ const Flight = require('../models/flight');
 const Reservation = require('../models/reservation');
 
 beforeAll(async () => {
-    await mongoose.connect('mongodb://localhost:27017/airroute_test');
+    const testUri = (process.env.MONGO_URI || 'mongodb://localhost:27017/airroute').replace('/airroute', '/airroute_test');
+    await mongoose.connect(testUri);
 });
 
 afterAll(async () => {
